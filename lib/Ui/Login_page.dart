@@ -1,8 +1,12 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pr_2/Bloc/Login/login_bloc.dart';
+import 'package:pr_2/Repository/Model/Login_model.dart';
 import 'package:pr_2/Ui/Home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,11 +16,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final username = TextEditingController();
+  final Email = TextEditingController();
   final password = TextEditingController();
   final formKey = GlobalKey<FormState>();
   var isobscure;
   bool ischecked = false;
+  late LoginModel login;
   @override
   void initState() {
     isobscure = false;
@@ -31,7 +36,9 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            SizedBox(height: 365.h,),
+            SizedBox(
+              height: 365.h,
+            ),
             Container(
               width: double.infinity.w,
               height: 480.h,
@@ -48,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                 color: Colors.white,
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
+                padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: SingleChildScrollView(
                   child: Form(
                     key: formKey,
@@ -73,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
                             color: Colors.black,
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w400,
-                            height: 4,
+                            height: 4.h,
                           ),
                         ),
                         SizedBox(
@@ -81,16 +88,17 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         TextFormField(
                           textInputAction: TextInputAction.next,
-                          controller: username,
+                          controller: Email,
                           style: TextStyle(color: Colors.black),
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Color(0xFFF1F2F3),
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Color.fromARGB(255, 223, 220, 220))),
+                                      color:
+                                          Color.fromARGB(255, 223, 220, 220))),
                               focusedBorder: InputBorder.none,
-                              labelText: 'User Name',
+                              labelText: 'Email',
                               labelStyle: GoogleFonts.poppins(
                                 color: Color(0xFF7C7C7C),
                                 fontSize: 14.sp,
@@ -117,10 +125,12 @@ class _LoginPageState extends State<LoginPage> {
                               fillColor: Color(0xFFF1F2F3),
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Color.fromARGB(255, 223, 220, 220))),
+                                      color:
+                                          Color.fromARGB(255, 223, 220, 220))),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Color.fromARGB(255, 223, 220, 220)),
+                                      color:
+                                          Color.fromARGB(255, 223, 220, 220)),
                                   borderRadius: BorderRadius.circular(8.r)),
                               labelText: 'Enter password  ',
                               labelStyle: GoogleFonts.poppins(
@@ -138,12 +148,12 @@ class _LoginPageState extends State<LoginPage> {
                                   icon: isobscure
                                       ? Icon(
                                           BootstrapIcons.eye,
-                                          color: Colors.white,
+                                          color: Colors.grey,
                                           size: 20.sp,
                                         )
                                       : Icon(
                                           BootstrapIcons.eye_slash,
-                                          color: Colors.white,
+                                          color: Colors.grey,
                                           size: 20.sp,
                                         ))),
                           obscureText: isobscure,
@@ -174,30 +184,73 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           height: 65.h,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (_) => HomeScreen()));
+                        BlocListener<LoginBloc, LoginState>(
+                          listener: (context, state) {
+                            if (state is Loginblocloading) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                              );
+                            }
+                            if (state is LoginblocError) {
+                              Navigator.of(context).pop();
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Center(
+                                    child: Text(
+                                      'Something Wrong',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                            if (state is Loginblocloaded) {
+                              login = BlocProvider.of<LoginBloc>(context)
+                                  .loginModel;
+                              token(login.token!.access.toString());
+                              
+                              Navigator.of(context).pop();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => HomeScreen()));
+                            }
                           },
-                          child: Container(
-                            height: 50.h,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.r),
-                                color:Color(0xFFFF6000)),
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Login',
-                                    style: GoogleFonts.inter(
-                                        color: Colors.white,
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w500,
-                                        height: 0.10),
-                                  ),
-                                ],
+                          child: GestureDetector(
+                            onTap: () {
+                              if (formKey.currentState!.validate()) {
+                                BlocProvider.of<LoginBloc>(context).add(
+                                    FetchloginEvent(
+                                        email: Email.text,
+                                        password: password.text));
+                              }
+                            },
+                            child: Container(
+                              height: 50.h,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  color: Color(0xFFFF6000)),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Login',
+                                      style: GoogleFonts.inter(
+                                          color: Colors.white,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500,
+                                          height: 0.10),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -215,5 +268,10 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void token(String token) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('Token', token);
   }
 }

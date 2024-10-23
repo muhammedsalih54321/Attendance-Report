@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:pr_2/Ui/Attendance_details.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String Qrcoderesult = '';
+  var Time = DateTime.now();
 
   Future<void> QRscanner() async {
     String ResultData;
@@ -32,9 +34,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   bool _isCheckedout = false;
-  void _toggleCheckIn() {
+  bool _isCheckedin = false;
+   void toggleCheckIn() {
     setState(() {
-      _isCheckedout = !_isCheckedout; // Toggle check-in status
+     _isCheckedin=!_isCheckedin;
+    });
+  }
+   void toggleCheckout() {
+    setState(() {
+     _isCheckedout=!_isCheckedout;
     });
   }
 
@@ -71,16 +79,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                       Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => AttendenceDetails()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => AttendenceDetails()));
                     },
                     child: Text(
                       'Report',
                       style: GoogleFonts.inter(
-                          color: Colors.white,
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w500,
-                         ),
+                        color: Colors.white,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],
@@ -106,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: Text(
-                        '07:40',
+                        '${Time.hour >= 12 ? '0' : ''}${Time.hour % 12 == 0 ? 12 : Time.hour % 12}:${Time.minute.toString().padLeft(2, '0')} ${Time.hour >= 12 ? 'PM' : 'AM'}',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.black,
@@ -118,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Monday, 01 November',
+                      '${DateFormat.MMMMEEEEd().format(Time)}',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 24,
@@ -187,7 +197,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Icon(
                                   BootstrapIcons.clock,
-                                  color:_isCheckedout?Color(0xFFFF6000):Colors.pink,
+                                  color: _isCheckedout
+                                      ? Color(0xFFFF6000)
+                                      : Colors.pink,
                                   size: 30.sp,
                                 ),
                                 Text(
@@ -220,7 +232,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   Icon(
                                     BootstrapIcons.clock,
-                                    color:_isCheckedout?Color(0xFFFF6000):Colors.pink,
+                                    color: _isCheckedout
+                                        ? Color(0xFFFF6000)
+                                        : Colors.pink,
                                     size: 30.sp,
                                   ),
                                   Text(
@@ -251,7 +265,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Icon(
                                   BootstrapIcons.clock_history,
-                                  color:_isCheckedout?Color(0xFFFF6000):Colors.pink,
+                                  color: _isCheckedout
+                                      ? Color(0xFFFF6000)
+                                      : Colors.pink,
                                   size: 30.sp,
                                 ),
                                 Text(

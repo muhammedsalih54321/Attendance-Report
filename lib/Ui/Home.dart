@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:pr_2/Ui/Attendance_details.dart';
 
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -15,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  
   String Qrcoderesult = '';
   var Time = DateTime.now();
 
@@ -33,16 +35,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  bool _isCheckedout = false;
-  bool _isCheckedin = false;
-   void toggleCheckIn() {
+  bool _isCheckedin = true;
+  void checkIn() {
     setState(() {
-     _isCheckedin=!_isCheckedin;
+      _isCheckedin = true; // Set status to checked in
     });
   }
-   void toggleCheckout() {
+
+  // Check Out function
+  void checkOut() {
     setState(() {
-     _isCheckedout=!_isCheckedout;
+      _isCheckedin = false; // Set status to checked out
     });
   }
 
@@ -50,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: _isCheckedout ? Colors.pink : Color(0xFFFF6000),
+        backgroundColor: _isCheckedin == true ? Color(0xFFFF6000) : Colors.pink,
         automaticallyImplyLeading: false,
         title: Text(
           'Attendence',
@@ -145,12 +148,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             GestureDetector(
               onTap: () {
-                _isCheckedout ? QRscanner() : QRscanner();
+                _isCheckedin ? QRscanner() : QRscanner();
               },
               child: CircleAvatar(
                 radius: 110.r,
                 backgroundColor:
-                    _isCheckedout ? Colors.pink : Color(0xFFFF6000),
+                    _isCheckedin == true ? Color(0xFFFF6000) : Colors.pink,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -164,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 20.h,
                       ),
                       Text(
-                        _isCheckedout ? 'Check Out' : 'Check In',
+                        _isCheckedin == true ? 'Check in' : 'Check out',
                         style: GoogleFonts.inter(
                             color: Colors.white,
                             fontSize: 22.sp,
@@ -187,40 +190,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Container(
-                          width: 110.w,
-                          height: 100.h,
-                          child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  BootstrapIcons.clock,
-                                  color: _isCheckedout
-                                      ? Color(0xFFFF6000)
-                                      : Colors.pink,
-                                  size: 30.sp,
-                                ),
-                                Text(
-                                  '--:--',
-                                  style: GoogleFonts.inter(
-                                    color: Colors.black,
-                                    fontSize: 22.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
-                                  'Check In',
-                                  style: GoogleFonts.inter(
-                                    color: Colors.grey,
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ])),
                       GestureDetector(
-                        onTap: _toggleCheckIn,
+                        onTap: checkIn,
                         child: Container(
                             width: 110.w,
                             height: 100.h,
@@ -232,7 +203,43 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   Icon(
                                     BootstrapIcons.clock,
-                                    color: _isCheckedout
+                                    color: _isCheckedin == true
+                                        ? Color(0xFFFF6000)
+                                        : Colors.pink,
+                                    size: 30.sp,
+                                  ),
+                                  Text(
+                                    '--:--',
+                                    style: GoogleFonts.inter(
+                                      color: Colors.black,
+                                      fontSize: 22.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Check In',
+                                    style: GoogleFonts.inter(
+                                      color: Colors.grey,
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ])),
+                      ),
+                      GestureDetector(
+                        onTap: checkOut,
+                        child: Container(
+                            width: 110.w,
+                            height: 100.h,
+                            child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    BootstrapIcons.clock,
+                                    color: _isCheckedin == true
                                         ? Color(0xFFFF6000)
                                         : Colors.pink,
                                     size: 30.sp,
@@ -265,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Icon(
                                   BootstrapIcons.clock_history,
-                                  color: _isCheckedout
+                                  color: _isCheckedin == true
                                       ? Color(0xFFFF6000)
                                       : Colors.pink,
                                   size: 30.sp,

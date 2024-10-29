@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class ApiClient {
+  
   Future<Response> invokeAPI(String path, String method, Object? body) async {
     Map<String, String> headerParams = {};
     Response response;
@@ -16,6 +17,7 @@ class ApiClient {
     print(url);
      final SharedPreferences prefs = await SharedPreferences.getInstance();
     String token= prefs.getString("Token")??"";
+    // String refresh= prefs.getString("Refresh")??"";
     print(token);
 
     final nullableHeaderParams = (headerParams.isEmpty) ? null : headerParams;
@@ -88,6 +90,9 @@ class ApiClient {
 
     print('status of $path =>' + (response.statusCode).toString());
     print(response.body);
+    if(response.statusCode==401){
+      // BlocProvider.of<LoginBloc>(context).add(FetchloginEvent(email: email, password: password));
+    }
     if (response.statusCode >= 400) {
       log(path +
           ' : ' +

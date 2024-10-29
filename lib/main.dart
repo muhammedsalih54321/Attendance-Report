@@ -5,6 +5,9 @@ import 'package:pr_2/Bloc/Login/login_bloc.dart';
 import 'package:pr_2/Bloc/Report/report_bloc.dart';
 import 'package:pr_2/Ui/Splash_screen.dart';
 
+
+
+
 void main() {
   runApp(const MyApp());
 }
@@ -26,12 +29,12 @@ class MyApp extends StatelessWidget {
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
-              title: 'Flutter Demo',
+              title: 'Attendance report',
               theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                colorScheme: ColorScheme.fromSeed(seedColor:Color(0xFFFF6000)),
                 useMaterial3: true,
               ),
-              home: SplashScreen(),
+              home:SplashScreen(),
             ),
           );
         });

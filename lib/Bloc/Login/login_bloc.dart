@@ -15,6 +15,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         loginModel= await hrmApi.getLogin(event.email, event.password);
         emit(Loginblocloaded());
+        
       } catch (e) {
         print(e.toString());
         emit(LoginblocError());

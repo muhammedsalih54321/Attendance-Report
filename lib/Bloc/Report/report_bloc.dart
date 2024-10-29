@@ -10,10 +10,10 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   late ReportModel reportModel;
   HrmApi hrmApi=HrmApi();
   ReportBloc() : super(ReportInitial()) {
-    on<ReportEvent>((event, emit)async {
+    on<FetchReportEvent>((event, emit)async {
       emit(ReportblocLoading());
       try {
-        reportModel= await hrmApi.getReport();
+        reportModel= await hrmApi.getReport(event.Year,event.month);
         emit(ReportblocLoaded());
       } catch (e) {
         emit(ReportblocError());

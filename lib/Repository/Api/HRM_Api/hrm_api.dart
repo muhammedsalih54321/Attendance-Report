@@ -26,8 +26,8 @@ print(response.body);
     return LoginModel.fromJson(jsonDecode(response.body));
   }
   //2
- Future<ReportModel> getReport() async {
-    String trendingpath = '$basePath/api/attendances/0aypsf736d6y3aq?startDate=2024-10-01 00:00:00.000Z&endDate=2024-10-31 23:59:59.999Z';
+ Future<ReportModel> getReport(String month,String year) async {
+    String trendingpath = '$basePath/api/attendances/report?month=$month&year=$year';
     var body = {
 
     };

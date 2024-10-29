@@ -213,7 +213,7 @@ class _LoginPageState extends State<LoginPage> {
                             if (state is Loginblocloaded) {
                               login = BlocProvider.of<LoginBloc>(context)
                                   .loginModel;
-                              token(login.token!.access.toString());
+                              token(login.token!.access.toString(),login.token!.refresh.toString());
                               
                               Navigator.of(context).pop();
                               Navigator.push(
@@ -270,8 +270,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void token(String token) async {
+  void token(String token,String refresh) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('Token', token);
+    prefs.setString('Refresh', refresh);
+
   }
 }

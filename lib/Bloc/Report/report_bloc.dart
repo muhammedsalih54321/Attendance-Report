@@ -13,7 +13,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     on<FetchReportEvent>((event, emit)async {
       emit(ReportblocLoading());
       try {
-        reportModel= await hrmApi.getReport(event.Year,event.month);
+        reportModel= await hrmApi.getReport(event.month,event.Year);
         emit(ReportblocLoaded());
       } catch (e) {
         emit(ReportblocError());

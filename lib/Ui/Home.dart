@@ -26,9 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ResultData = await FlutterBarcodeScanner.scanBarcode(
           "#ff6666", "cancel", true, ScanMode.QR);
 
-      print('Result:$ResultData');
+
       setState(() {
         Qrcoderesult = ResultData;
+        print('Result:$Qrcoderesult');
       });
     } on PlatformException {
       ResultData = 'Failed to Scan !';

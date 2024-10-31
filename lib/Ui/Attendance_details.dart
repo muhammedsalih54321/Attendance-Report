@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:pr_2/Bloc/Report/report_bloc.dart';
 import 'package:pr_2/Repository/Model/Report_model.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class AttendenceDetails extends StatefulWidget {
   // final String checkIn;
@@ -27,8 +28,7 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
     BlocProvider.of<ReportBloc>(context).add(FetchReportEvent(
         month: _currentDate.month.toString(),
         Year: _currentDate.year.toString()));
-        Dateinmonth = DateFormat('MMMM').format(DateTime.now());
-        Dateinyear=DateFormat('yyyy').format(DateTime.now());
+
     super.initState();
   }
 
@@ -50,31 +50,68 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
     return '${Weekdays[weekday - 1]}\n   $dayNumber';
   }
 
-  DateTime _currentDate = DateTime.now(); // Initially set to current date
+  DateTime _currentDate = DateTime.now();
+  DateTime _selectedDate = DateTime.now();
 
-  // // Function to format the current month and year
-  // String getCurrentMonthYear() {
-  //   return DateFormat('MMMM, yyyy').format(_currentDate);
-  // }
- String Dateinmonth = '';
- String Dateinyear = '';
+  // Method to show the month and year picker dialog
+  Future<void> _openMonthYearPickerDialog() async {
+    DateTime _tempSelectedDate = _selectedDate;
 
-
-  Future<void> selectedate() async {
-    DateTime? picked = await showDatePicker(
+    DateTime? pickedDate = await showDialog<DateTime>(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Select Month and Year'),
+          content: SizedBox(
+            height: 526.h, // Increase height to accommodate the OK button
+            width: 500.w,
+            child: Column(
+              children: [
+                Expanded(
+                  child: TableCalendar(
+                    focusedDay: _tempSelectedDate,
+                    firstDay: DateTime(2000),
+                    lastDay: DateTime(2100),
+                    calendarFormat: CalendarFormat.month,
+                    headerStyle: HeaderStyle(
+                      formatButtonVisible: false,
+                      titleCentered: true,
+                    ),
+                    onPageChanged: (focusedDay) {
+                      _tempSelectedDate = focusedDay;
+                    },
+                    onDaySelected: (selectedDay, focusedDay) {
+                      _tempSelectedDate =
+                          focusedDay; // Update temporary selection
+                    },
+                    calendarBuilders: CalendarBuilders(
+                      defaultBuilder: (context, date, _) => Container(),
+                      todayBuilder: (context, date, _) => Container(),
+                      selectedBuilder: (context, date, _) => Container(),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 3.h),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(
+                        context, _tempSelectedDate); // Return the selected date
+                  },
+                  child: Text("OK"),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
 
-    if (picked != null) {
+    if (pickedDate != null) {
       setState(() {
-        Dateinmonth = DateFormat('MMMM').format(picked);  
-        Dateinyear=DateFormat('yyyy').format(picked);// Update date
+        _selectedDate = pickedDate;
       });
     }
-  }
+  } // Initially set to current date
 
   @override
   Widget build(BuildContext context) {
@@ -105,8 +142,14 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
         child: BlocBuilder<ReportBloc, ReportState>(
           builder: (context, state) {
             if (state is ReportblocLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 350.h,),
+                  Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ],
               );
             }
             if (state is ReportblocError) {
@@ -145,7 +188,7 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
                             child: Container(),
                           ),
                           Text(
-                            '$Dateinmonth,$Dateinyear',
+                            '${DateFormat('MMMM').format(_selectedDate)},${DateFormat('yyyy').format(_selectedDate)}',
                             style: GoogleFonts.inter(
                               color: Colors.black,
                               fontSize: 16.sp,
@@ -154,7 +197,18 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              selectedate();
+                              _openMonthYearPickerDialog().then(
+                                (value) {
+                                  setState(() {
+                                    BlocProvider.of<ReportBloc>(context).add(
+                                        FetchReportEvent(
+                                            month:
+                                                _selectedDate.month.toString(),
+                                            Year:
+                                                _selectedDate.year.toString()));
+                                  });
+                                },
+                              );
                             },
                             child: Icon(
                               Icons.calendar_month,
@@ -172,6 +226,7 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Card(
                       child: Container(
+                        color: Colors.white,
                         height: 352.h,
                         width: double.infinity.w,
                         child: Column(
@@ -360,14 +415,14 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
                           padding: EdgeInsets.only(bottom: 10.w),
                           child: Card(
                             child: Container(
-                              height: 100.h,
+                              height: 201.h,
                               width: double.infinity,
                               color: Colors.white,
                               child: Row(
                                 children: [
                                   Container(
-                                    height: 100.h,
-                                    width: 100.w,
+                                    height: 201.h,
+                                    width: 88.w,
                                     color: Color.fromARGB(255, 254, 245, 240),
                                     child: Center(
                                       child: Text(
@@ -417,7 +472,7 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
                                                 children: [
                                                   Container(
                                                     height: 50.h,
-                                                    width: 50.w,
+                                                    width: 120.w,
                                                     child: Padding(
                                                       padding: EdgeInsets.only(
                                                           top: 15.h),
@@ -471,12 +526,121 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
                                                 children: [
                                                   Container(
                                                     height: 50.h,
-                                                    width: 50.w,
+                                                    width: 120.w,
                                                     child: Padding(
                                                       padding: EdgeInsets.only(
                                                           top: 15.h),
                                                       child: Text(
                                                         'OUT',
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                          color: Colors.black,
+                                                          fontSize: 15.sp,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 50.w,
+                                                  ),
+                                                  Container(
+                                                    height: 30.h,
+                                                    width: 70.w,
+                                                    decoration: ShapeDecoration(
+                                                      color: Colors.red,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8.r),
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        '05:30',
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                          color: Colors.white,
+                                                          fontSize: 15.sp,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(height: .5.h,width: 248.w,color: Colors.black,),
+                                             Container(
+                                              height: 50.h,
+                                              width: 240.w,
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    height: 50.h,
+                                                    width: 120.w,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 15.h),
+                                                      child: Text(
+                                                        'OVERTIMEIN',
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                          color: Colors.black,
+                                                          fontSize: 15.sp,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 50.w,
+                                                  ),
+                                                  Container(
+                                                    height: 30.h,
+                                                    width: 70.w,
+                                                    decoration: ShapeDecoration(
+                                                      color: Colors.green,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8.r),
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        '09:30',
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                          color: Colors.white,
+                                                          fontSize: 15.sp,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 50.h,
+                                              width: 240.w,
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    height: 60.h,
+                                                    width: 120.w,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 15.h),
+                                                      child: Text(
+                                                        'OVERTIMEOUT',
                                                         style:
                                                             GoogleFonts.inter(
                                                           color: Colors.black,

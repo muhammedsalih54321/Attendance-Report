@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   late LoginModel login;
   @override
   void initState() {
-    isobscure = false;
+    isobscure = true;
     super.initState();
   }
 
@@ -167,20 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           height: 15.h,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              'forget password',
-                              style: GoogleFonts.poppins(
-                                color: Colors.black,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w400,
-                                height: 0.12,
-                              ),
-                            )
-                          ],
-                        ),
+                       
                         SizedBox(
                           height: 65.h,
                         ),

@@ -5,6 +5,9 @@ import 'package:pr_2/Bloc/Login/login_bloc.dart';
 import 'package:pr_2/Bloc/Report/report_bloc.dart';
 import 'package:pr_2/Ui/Splash_screen.dart';
 
+import 'Bloc/CheckIn/check_in_bloc.dart';
+import 'Bloc/CheckOut/check_out_bloc.dart';
+
 
 
 
@@ -26,7 +29,9 @@ class MyApp extends StatelessWidget {
           return MultiBlocProvider(
             providers: [
               BlocProvider(create: (context) => LoginBloc()),
-              BlocProvider(create: (context) => ReportBloc())
+              BlocProvider(create: (context) => ReportBloc()),
+              BlocProvider(create: (context) => CheckInBloc()),
+              BlocProvider(create: (context) => CheckOutBloc())
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,

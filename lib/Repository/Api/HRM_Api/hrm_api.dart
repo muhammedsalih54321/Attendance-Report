@@ -6,12 +6,14 @@ import 'package:pr_2/Repository/Model/Login_model.dart';
 import 'package:pr_2/Repository/Model/Report_model.dart';
 import 'package:pr_2/main.dart';
 
+import '../../Model/CheckInModel.dart';
+
 
 class HrmApi {
   ApiClient apiClient = ApiClient();
 //1
   Future<LoginModel> getLogin(String email,String password ) async {
-    String trendingpath = '$basePath/auth/local/login';
+    String trendingpath = '/auth/local/login';
 
     print(trendingpath);
     var body ={
@@ -20,14 +22,14 @@ class HrmApi {
 };
 print(body);
     Response response =
-        await apiClient.invokeAPI(trendingpath, 'POST', jsonEncode(body));
+        await apiClient.invokeAPI(trendingpath, 'LOGINPOST', jsonEncode(body));
        
 print(response.body);
     return LoginModel.fromJson(jsonDecode(response.body));
   }
   //2
  Future<ReportModel> getReport(String month,String year) async {
-    String trendingpath = '$basePath/api/attendances/report?month=$month&year=$year';
+    String trendingpath = '/api/attendances/report?month=$month&year=$year';
     var body = {
 
     };
@@ -35,5 +37,28 @@ print(response.body);
 
     return ReportModel.fromJson(jsonDecode(response.body));
   }
- 
+ //check in api
+  Future<CheckInModel> checkIn(String qr) async {
+    String trendingpath = '/api/attendances/check-in/$qr';
+
+    print(trendingpath);
+    var body ={
+
+    };
+    Response response = await apiClient.invokeAPI(trendingpath, 'POST', body);
+
+    return CheckInModel.fromJson(jsonDecode(response.body));
+  }
+  //checkout api
+  Future<void> checkOut(String qr,String attendenceId) async {
+    String trendingpath = '/api/attendances/check-out/$attendenceId/$qr';
+
+    print(trendingpath);
+    var body ={
+
+    };
+    await apiClient.invokeAPI(trendingpath, 'POST', body);
+
+
+  }
 }

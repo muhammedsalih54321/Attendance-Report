@@ -44,6 +44,7 @@ dependencies:
   http: ^1.2.2
   shared_preferences: ^2.3.2
   table_calendar: ^3.1.2
+  fluttertoast:
 
 dev_dependencies:
   flutter_test:

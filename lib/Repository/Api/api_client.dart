@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart';
 import 'package:pr_2/Repository/Api/api_exeption.dart';
+import 'package:pr_2/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -13,7 +14,7 @@ class ApiClient {
     Map<String, String> headerParams = {};
     Response response;
 
-    String url = path;
+    String url = basePath+path;
     print(url);
      final SharedPreferences prefs = await SharedPreferences.getInstance();
     String token= prefs.getString("Token")??"";
@@ -23,10 +24,20 @@ class ApiClient {
     final nullableHeaderParams = (headerParams.isEmpty) ? null : headerParams;
     print(body);
     switch (method) {
-      case "POST":
+      case "LOGINPOST":
         response = await post(Uri.parse(url),
             headers: {
                 'Content-Type': 'application/json',
+              //'content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: body);
+
+        break;
+      case "POST":
+        response = await post(Uri.parse(url),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': "Bearer $token",
               //'content-Type': 'application/x-www-form-urlencoded',
             },
             body: body);

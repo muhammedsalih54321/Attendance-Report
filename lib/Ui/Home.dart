@@ -66,9 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-// Enable overtime tab view only between 6:00 PM and 6:30 PM
+// Enable overtime tab view only between 6:00 PM and 11:59 PM
   bool get isOvertimeAllowed =>
-      currentTime.hour == 18 && currentTime.minute >= 0 && currentTime.minute <= 30;
+      currentTime.hour >= 18 && currentTime.hour <= 23;
+
 
 
   Widget _buildCheckInUI() {

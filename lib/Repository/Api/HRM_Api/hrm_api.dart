@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:pr_2/Repository/Api/api_client.dart';
 import 'package:pr_2/Repository/Model/Login_model.dart';
@@ -7,6 +8,7 @@ import 'package:pr_2/Repository/Model/Report_model.dart';
 import 'package:pr_2/main.dart';
 
 import '../../Model/CheckInModel.dart';
+import '../../Model/RefereshTokenModel.dart';
 
 class HrmApi {
   ApiClient apiClient = ApiClient();
@@ -19,7 +21,7 @@ class HrmApi {
     var body = {"email": email, "password": password};
     print(body);
     Response response =
-        await apiClient.invokeAPI(trendingpath, 'LOGINPOST', jsonEncode(body));
+        await apiClient.invokeAPI(trendingpath, 'LOGINPOST', jsonEncode(body),null);
 
     print(response.body);
     return LoginModel.fromJson(jsonDecode(response.body));
@@ -29,7 +31,7 @@ class HrmApi {
   Future<ReportModel> getReport(String month, String year) async {
     String trendingpath = '/api/attendances/report?month=$month&year=$year';
     var body = {};
-    Response response = await apiClient.invokeAPI(trendingpath, 'GET', body);
+    Response response = await apiClient.invokeAPI(trendingpath, 'GET', body,null);
 
     return ReportModel.fromJson(jsonDecode(response.body));
   }
@@ -40,7 +42,7 @@ class HrmApi {
 
     print(trendingpath);
     var body = {};
-    Response response = await apiClient.invokeAPI(trendingpath, 'POST', body);
+    Response response = await apiClient.invokeAPI(trendingpath, 'POST', body,null);
 
     return CheckInModel.fromJson(jsonDecode(response.body));
   }
@@ -51,7 +53,7 @@ class HrmApi {
 
     print(trendingpath);
     var body = {};
-    Response response =   await apiClient.invokeAPI(trendingpath, 'POST', body);
+    Response response =   await apiClient.invokeAPI(trendingpath, 'POST', body,null);
     return CheckInModel.fromJson(jsonDecode(response.body));
   }
   //overTime CheckIn
@@ -60,7 +62,7 @@ class HrmApi {
 
     print(trendingpath);
     var body = {};
-    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body);
+    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body,null);
     return CheckInModel.fromJson(jsonDecode(response.body));
   }
   //overTime CheckOut
@@ -69,7 +71,18 @@ class HrmApi {
 
     print(trendingpath);
     var body = {};
-    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body);
+    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body,null);
     return CheckInModel.fromJson(jsonDecode(response.body));
+  }
+  //referesh token
+  Future<RefereshTokenModel> refreshToken(String refereshToken,BuildContext ctx) async {
+    String trendingpath = '/auth/refresh';
+
+    print(trendingpath);
+    var body ={
+      "refresh":refereshToken
+    };
+    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body,ctx);
+    return RefereshTokenModel.fromJson(jsonDecode(response.body));
   }
 }

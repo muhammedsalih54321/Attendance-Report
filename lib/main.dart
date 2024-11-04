@@ -9,6 +9,7 @@ import 'Bloc/CheckIn/check_in_bloc.dart';
 import 'Bloc/CheckOut/check_out_bloc.dart';
 import 'Bloc/OverTimeCheckIn/over_time_check_in_bloc.dart';
 import 'Bloc/OverTimeCheckout/over_time_check_out_bloc.dart';
+import 'Bloc/RefreshToken/referesh_token_bloc.dart';
 
 
 
@@ -35,7 +36,8 @@ class MyApp extends StatelessWidget {
               BlocProvider(create: (context) => CheckInBloc()),
               BlocProvider(create: (context) => CheckOutBloc()),
               BlocProvider(create: (context) => OverTimeCheckInBloc()),
-              BlocProvider(create: (context) => OverTimeCheckOutBloc())
+              BlocProvider(create: (context) => OverTimeCheckOutBloc()),
+              BlocProvider(create: (context) => RefereshTokenBloc()),
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,

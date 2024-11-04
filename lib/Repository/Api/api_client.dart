@@ -1,16 +1,20 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:pr_2/Repository/Api/api_exeption.dart';
 import 'package:pr_2/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../Bloc/RefreshToken/referesh_token_bloc.dart';
 
 
 
 
 class ApiClient {
   
-  Future<Response> invokeAPI(String path, String method, Object? body) async {
+  Future<Response> invokeAPI(String path, String method, Object? body,BuildContext? ctx) async {
     Map<String, String> headerParams = {};
     Response response;
 
@@ -18,6 +22,7 @@ class ApiClient {
     print(url);
      final SharedPreferences prefs = await SharedPreferences.getInstance();
     String token= prefs.getString("Token")??"";
+    String refreshToken= prefs.getString("Refresh")??"";
     // String refresh= prefs.getString("Refresh")??"";
     print(token);
 
@@ -102,7 +107,7 @@ class ApiClient {
     print('status of $path =>' + (response.statusCode).toString());
     print(response.body);
     if(response.statusCode==401){
-      // BlocProvider.of<LoginBloc>(context).add(FetchloginEvent(email: email, password: password));
+      BlocProvider.of<RefereshTokenBloc>(ctx!).add(FetchRefreshToken(refershToken: refreshToken, ctx: ctx));
     }
     if (response.statusCode >= 400) {
       log(path +

@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:pr_2/Ui/Attendance_details.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -16,9 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  
   String Qrcoderesult = '';
-  var Time = DateTime.now();
 
   Future<void> QRscanner() async {
     String ResultData;
@@ -32,6 +29,21 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     } on PlatformException {
       ResultData = 'Failed to Scan !';
+    }
+  }
+
+  Stream<String> getTimeStream() async* {
+    while (true) {
+      await Future.delayed(Duration(seconds: 1));
+      yield DateFormat('hh:mm a').format(DateTime.now());
+    }
+  }
+
+  Stream<String> getDateStream() async* {
+    while (true) {
+      await Future.delayed(Duration(seconds: 1));
+      yield DateFormat.MMMMEEEEd().format(DateTime.now());
+      ;
     }
   }
 
@@ -116,28 +128,46 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 100.h,
                 child: Column(
                   children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        '${Time.hour >= 12 ? '0' : ''}${Time.hour % 12 == 0 ? 12 : Time.hour % 12}:${Time.minute.toString().padLeft(2, '0')} ${Time.hour >= 12 ? 'PM' : 'AM'}',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 40,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                    StreamBuilder<String>(
+                      stream: getTimeStream(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              snapshot.data!,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 40.sp,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      },
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      '${DateFormat.MMMMEEEEd().format(Time)}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                      ),
+                    StreamBuilder<String>(
+                      stream: getDateStream(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Text(
+                            snapshot.data!,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 24,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -148,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             GestureDetector(
               onTap: () {
-                _isCheckedin ? QRscanner() : QRscanner();
+                _isCheckedin == true ? QRscanner() : QRscanner();
               },
               child: CircleAvatar(
                 radius: 110.r,

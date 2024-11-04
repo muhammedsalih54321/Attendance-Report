@@ -39,11 +39,11 @@ class CheckInModel {
   String? date;
   String? employee;
   bool? halfDayCut;
-  int? hoursWorked;
+  dynamic hoursWorked;
   String? id;
   String? overtimeCheckInTime;
   String? overtimeCheckOutTime;
-  int? overtimeHours;
+  dynamic overtimeHours;
   String? updated;
 
   Map<String, dynamic> toJson() {

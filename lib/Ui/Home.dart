@@ -3,10 +3,13 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:pr_2/Ui/Attendance_details.dart';
+
+import '../Bloc/CheckIn/check_in_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -38,7 +41,50 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> QRscanner() async {
+  Future<void> checkInQRscanner() async {
+    String ResultData;
+    try {
+      ResultData = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "cancel", true, ScanMode.QR);
+
+      setState(() {
+        Qrcoderesult = ResultData;
+        print('Result:$Qrcoderesult');
+      });
+      BlocProvider.of<CheckInBloc>(context).add(FetchCheckIn(qr: Qrcoderesult));
+    } on PlatformException {
+      ResultData = 'Failed to Scan !';
+    }
+  }
+  Future<void> checkOutQRscanner() async {
+    String ResultData;
+    try {
+      ResultData = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "cancel", true, ScanMode.QR);
+
+      setState(() {
+        Qrcoderesult = ResultData;
+        print('Result:$Qrcoderesult');
+      });
+    } on PlatformException {
+      ResultData = 'Failed to Scan !';
+    }
+  }
+  Future<void> overTimeCheckInQRscanner() async {
+    String ResultData;
+    try {
+      ResultData = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "cancel", true, ScanMode.QR);
+
+      setState(() {
+        Qrcoderesult = ResultData;
+        print('Result:$Qrcoderesult');
+      });
+    } on PlatformException {
+      ResultData = 'Failed to Scan !';
+    }
+  }
+  Future<void> overTimeCheckOutQRscanner() async {
     String ResultData;
     try {
       ResultData = await FlutterBarcodeScanner.scanBarcode(
@@ -75,122 +121,122 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildCheckInUI() {
     return
       Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: Column(
-        children: [
-          SizedBox(height: 80.h),
-          Center(
-            child: Container(
-              width: 300.w,
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        child: Column(
+          children: [
+            SizedBox(height: 80.h),
+            Center(
+              child: Container(
+                width: 300.w,
+                height: 100.h,
+                child: Column(
+                  children: [
+                    Text(
+                      '${currentTime.hour % 12 == 0 ? 12 : currentTime.hour % 12}:${currentTime.minute.toString().padLeft(2, '0')} ${currentTime.hour >= 12 ? 'PM' : 'AM'}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 40.sp,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${DateFormat.MMMMEEEEd().format(currentTime)}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24.sp,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 30.h),
+            GestureDetector(
+              onTap:_isCheckedin ? checkInQRscanner:checkOutQRscanner,
+              child: CircleAvatar(
+                radius: 110.r,
+                backgroundColor: _isCheckedin ? Color(0xFFFF6000) : Colors.pink,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        BootstrapIcons.hand_index_thumb,
+                        color: Colors.white,
+                        size: 80.sp,
+                      ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        _isCheckedin ? 'Check in' : 'Check out',
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.w500,
+                          height: 1.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 80.h),
+            Container(
+              width: double.infinity,
               height: 100.h,
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '${currentTime.hour % 12 == 0 ? 12 : currentTime.hour % 12}:${currentTime.minute.toString().padLeft(2, '0')} ${currentTime.hour >= 12 ? 'PM' : 'AM'}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 40.sp,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w600,
+                  GestureDetector(
+                    onTap: checkIn,
+                    child: Column(
+                      children: [
+                        Icon(
+                          BootstrapIcons.clock,
+                          color: _isCheckedin ? Color(0xFFFF6000) : Colors.pink,
+                          size: 30.sp,
+                        ),
+                        Text('--:--', style: TextStyle(fontSize: 22.sp)),
+                        Text('Check In', style: TextStyle(fontSize: 15.sp)),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '${DateFormat.MMMMEEEEd().format(currentTime)}',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 24.sp,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
+                  GestureDetector(
+                    onTap: checkOut,
+                    child: Column(
+                      children: [
+                        Icon(
+                          BootstrapIcons.clock,
+                          color: _isCheckedin ? Color(0xFFFF6000) : Colors.pink,
+                          size: 30.sp,
+                        ),
+                        Text('--:--', style: TextStyle(fontSize: 22.sp)),
+                        Text('Check Out', style: TextStyle(fontSize: 15.sp)),
+                      ],
                     ),
+                  ),
+                  Column(
+                    children: [
+                      Icon(
+                        BootstrapIcons.clock_history,
+                        color: _isCheckedin ? Color(0xFFFF6000) : Colors.pink,
+                        size: 30.sp,
+                      ),
+                      Text('--:--', style: TextStyle(fontSize: 22.sp)),
+                      Text('Working Hrs', style: TextStyle(fontSize: 15.sp)),
+                    ],
                   ),
                 ],
               ),
             ),
-          ),
-          SizedBox(height: 30.h),
-          GestureDetector(
-            onTap: QRscanner,
-            child: CircleAvatar(
-              radius: 110.r,
-              backgroundColor: _isCheckedin ? Color(0xFFFF6000) : Colors.pink,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      BootstrapIcons.hand_index_thumb,
-                      color: Colors.white,
-                      size: 80.sp,
-                    ),
-                    SizedBox(height: 20.h),
-                    Text(
-                      _isCheckedin ? 'Check in' : 'Check out',
-                      style: GoogleFonts.inter(
-                        color: Colors.white,
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.w500,
-                        height: 1.2,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 80.h),
-          Container(
-            width: double.infinity,
-            height: 100.h,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: checkIn,
-                  child: Column(
-                    children: [
-                      Icon(
-                        BootstrapIcons.clock,
-                        color: _isCheckedin ? Color(0xFFFF6000) : Colors.pink,
-                        size: 30.sp,
-                      ),
-                      Text('--:--', style: TextStyle(fontSize: 22.sp)),
-                      Text('Check In', style: TextStyle(fontSize: 15.sp)),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: checkOut,
-                  child: Column(
-                    children: [
-                      Icon(
-                        BootstrapIcons.clock,
-                        color: _isCheckedin ? Color(0xFFFF6000) : Colors.pink,
-                        size: 30.sp,
-                      ),
-                      Text('--:--', style: TextStyle(fontSize: 22.sp)),
-                      Text('Check Out', style: TextStyle(fontSize: 15.sp)),
-                    ],
-                  ),
-                ),
-                Column(
-                  children: [
-                    Icon(
-                      BootstrapIcons.clock_history,
-                      color: _isCheckedin ? Color(0xFFFF6000) : Colors.pink,
-                      size: 30.sp,
-                    ),
-                    Text('--:--', style: TextStyle(fontSize: 22.sp)),
-                    Text('Working Hrs', style: TextStyle(fontSize: 15.sp)),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
   }
 
   Widget _buildOvertimeUI() {
@@ -232,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: 30.h),
             GestureDetector(
-              onTap: QRscanner,
+              onTap: _isCheckedin ? overTimeCheckInQRscanner:overTimeCheckOutQRscanner,
               child: CircleAvatar(
                 radius: 110.r,
                 backgroundColor: _isCheckedin ? Color(0xFFFF6000) : Colors.pink,

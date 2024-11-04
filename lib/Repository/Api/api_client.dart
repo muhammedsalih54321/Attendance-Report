@@ -41,7 +41,7 @@ class ApiClient {
       case "POST":
         response = await post(Uri.parse(url),
             headers: {
-              'Content-Type': 'application/json',
+
               'Authorization': "Bearer $token",
               //'content-Type': 'application/x-www-form-urlencoded',
             },

@@ -17,7 +17,7 @@ class CheckInBloc extends Bloc<CheckInEvent, CheckInState> {
       try {
         checkInModel= await hrmApi.checkIn(event.qr);
         emit(CheckInloaded());
-
+ToastMessage().toastmessage(message: "Check In Success");
       } catch (e) {
         print(e.toString());
         ToastMessage().toastmessage(message: e.toString());

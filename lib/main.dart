@@ -7,6 +7,8 @@ import 'package:pr_2/Ui/Splash_screen.dart';
 
 import 'Bloc/CheckIn/check_in_bloc.dart';
 import 'Bloc/CheckOut/check_out_bloc.dart';
+import 'Bloc/OverTimeCheckIn/over_time_check_in_bloc.dart';
+import 'Bloc/OverTimeCheckout/over_time_check_out_bloc.dart';
 
 
 
@@ -31,7 +33,9 @@ class MyApp extends StatelessWidget {
               BlocProvider(create: (context) => LoginBloc()),
               BlocProvider(create: (context) => ReportBloc()),
               BlocProvider(create: (context) => CheckInBloc()),
-              BlocProvider(create: (context) => CheckOutBloc())
+              BlocProvider(create: (context) => CheckOutBloc()),
+              BlocProvider(create: (context) => OverTimeCheckInBloc()),
+              BlocProvider(create: (context) => OverTimeCheckOutBloc())
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,

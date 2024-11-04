@@ -46,27 +46,30 @@ class HrmApi {
   }
 
   //checkout api
-  Future<void> checkOut(String qr, String attendenceId) async {
+  Future<CheckInModel> checkOut(String qr, String attendenceId) async {
     String trendingpath = '/api/attendances/check-out/$attendenceId/$qr';
 
     print(trendingpath);
     var body = {};
-    await apiClient.invokeAPI(trendingpath, 'POST', body);
+    Response response =   await apiClient.invokeAPI(trendingpath, 'POST', body);
+    return CheckInModel.fromJson(jsonDecode(response.body));
   }
   //overTime CheckIn
-  Future<void> overTimeCheckIn(String qr, String attendenceId) async {
+  Future<CheckInModel> overTimeCheckIn(String qr, String attendenceId) async {
     String trendingpath = '/api/attendances/overtime-check-in/$attendenceId/$qr';
 
     print(trendingpath);
     var body = {};
-    await apiClient.invokeAPI(trendingpath, 'POST', body);
+    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body);
+    return CheckInModel.fromJson(jsonDecode(response.body));
   }
   //overTime CheckOut
-  Future<void> overTimeCheckOut(String qr, String attendenceId) async {
+  Future<CheckInModel> overTimeCheckOut(String qr, String attendenceId) async {
     String trendingpath = '/api/attendances/overtime-check-out/$attendenceId/$qr';
 
     print(trendingpath);
     var body = {};
-    await apiClient.invokeAPI(trendingpath, 'POST', body);
+    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body);
+    return CheckInModel.fromJson(jsonDecode(response.body));
   }
 }

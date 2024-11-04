@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:pr_2/Bloc/TodayAttendence/today_attendence_bloc.dart';
 import 'package:pr_2/Ui/Attendance_details.dart';
 
 import '../Bloc/CheckIn/check_in_bloc.dart';
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     timer = Timer.periodic(Duration(seconds: 1), (Timer t) => _updateTime());
+    BlocProvider.of<TodayAttendenceBloc>(context).add(FetchTodayAttendence());
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pr_2/Bloc/Login/login_bloc.dart';
 import 'package:pr_2/Bloc/Report/report_bloc.dart';
+import 'package:pr_2/Bloc/TodayAttendence/today_attendence_bloc.dart';
 import 'package:pr_2/Ui/Splash_screen.dart';
 
 import 'Bloc/CheckIn/check_in_bloc.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
               BlocProvider(create: (context) => OverTimeCheckInBloc()),
               BlocProvider(create: (context) => OverTimeCheckOutBloc()),
               BlocProvider(create: (context) => RefereshTokenBloc()),
+              BlocProvider(create: (context) => TodayAttendenceBloc()),
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,

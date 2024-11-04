@@ -7,6 +7,7 @@ import 'package:pr_2/Repository/Model/Login_model.dart';
 import 'package:pr_2/Repository/Model/Report_model.dart';
 import 'package:pr_2/main.dart';
 
+import '../../Model/AttendenceModel.dart';
 import '../../Model/CheckInModel.dart';
 import '../../Model/RefereshTokenModel.dart';
 
@@ -84,5 +85,16 @@ class HrmApi {
     };
     Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body,ctx);
     return RefereshTokenModel.fromJson(jsonDecode(response.body));
+  }
+  //get today attendence
+  Future<AttendenceModel> getTodayAttendence() async {
+    String trendingpath = '/api/attendances/today';
+
+    print(trendingpath);
+    var body ={
+
+    };
+    Response response =  await apiClient.invokeAPI(trendingpath, 'GET', body,null);
+    return AttendenceModel.fromJson(jsonDecode(response.body));
   }
 }

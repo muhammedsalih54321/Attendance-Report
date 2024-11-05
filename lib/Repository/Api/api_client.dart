@@ -1,23 +1,21 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pr_2/Repository/Api/api_exeption.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
-
 class ApiClient {
-  
-  Future<Response> invokeAPI(String path, String method, Object? body) async {
+  Future<Response> invokeAPI(
+      String path, String method, Object? body, BuildContext? ctx) async {
     Map<String, String> headerParams = {};
     Response response;
 
     String url = path;
     print(url);
-     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token= prefs.getString("Token")??"";
-    // String refresh= prefs.getString("Refresh")??"";
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("Token") ?? "";
+  
     print(token);
 
     final nullableHeaderParams = (headerParams.isEmpty) ? null : headerParams;
@@ -26,7 +24,7 @@ class ApiClient {
       case "POST":
         response = await post(Uri.parse(url),
             headers: {
-                'Content-Type': 'application/json',
+              'Content-Type': 'application/json',
               //'content-Type': 'application/x-www-form-urlencoded',
             },
             body: body);
@@ -60,7 +58,7 @@ class ApiClient {
         response = await get(
           Uri.parse(url),
           headers: {
-           'Authorization': "Bearer $token",
+            'Authorization': "Bearer $token",
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           },
@@ -90,8 +88,9 @@ class ApiClient {
 
     print('status of $path =>' + (response.statusCode).toString());
     print(response.body);
-    if(response.statusCode==401){
-      // BlocProvider.of<LoginBloc>(context).add(FetchloginEvent(email: email, password: password));
+    if (response.statusCode == 401) {
+      print("hello");
+    
     }
     if (response.statusCode >= 400) {
       log(path +

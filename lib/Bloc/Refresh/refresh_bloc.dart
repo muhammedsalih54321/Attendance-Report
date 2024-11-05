@@ -14,13 +14,15 @@ class RefreshBloc extends Bloc<RefreshEvent, RefreshState> {
   RefreshBloc() : super(RefreshInitial()) {
     on<FetchlRefreshEvent>((event, emit) async {
       emit(RefreshLoading());
+      print("loading");
       try {
         refreshModel = await hrmApi.getRefresh(event.refresh,event.ctx);
         emit(RefreshLoaded());
-       
+        print("loaded");
         token(refreshModel.access.toString(), refreshModel.refresh.toString());
       } catch (e) {
         emit(RefreshError());
+         print("error${e.toString()}");
       }
     });
   }

@@ -153,7 +153,9 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
               );
             }
             if (state is ReportblocError) {
-              return RefreshIndicator(
+              return 
+
+               RefreshIndicator(
                 child: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
                   child: SizedBox(
@@ -423,7 +425,7 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
                                 children: [
                                   Container(
                                     height: 201.h,
-                                    width: 88.w,
+                                    width: 90.w,
                                     color: Color.fromARGB(255, 254, 245, 240),
                                     child: Center(
                                       child: Text(

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:pr_2/Bloc/CheckOut/check_out_bloc.dart';
 import 'package:pr_2/Bloc/TodayAttendence/today_attendence_bloc.dart';
 import 'package:pr_2/Ui/Attendance_details.dart';
 
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime currentTime = DateTime.now();
   late Timer timer;
   late TodayAttendenceModel todayAttendenceModelData;
+  late String attendenceId;
   @override
   void initState() {
     super.initState();
@@ -69,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Qrcoderesult = ResultData;
         print('Result:$Qrcoderesult');
       });
+      BlocProvider.of<CheckOutBloc>(context).add(FetchCheckOut(qr: Qrcoderesult, attendenceId: attendenceId,));
     } on PlatformException {
       ResultData = 'Failed to Scan !';
     }
@@ -196,12 +199,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     if(state is TodayAttendenceblocLoaded){
       todayAttendenceModelData = BlocProvider.of<TodayAttendenceBloc>(context).todayAttendenceModel;
-
+      attendenceId=todayAttendenceModelData.id.toString();
       // Parse and format the checkInTime if it's not empty
       String checkInTimeDisplay = '--:--';
+      String checkOutTimeDisplay = '--:--';
       if (todayAttendenceModelData.checkInTime != '') {
         DateTime checkInDateTime = DateTime.parse(todayAttendenceModelData.checkInTime!);
         checkInTimeDisplay = DateFormat('hh:mm a').format(checkInDateTime);
+      }
+      if (todayAttendenceModelData.checkOutTime != '') {
+        DateTime checkOutDateTime = DateTime.parse(todayAttendenceModelData.checkOutTime!);
+        checkOutTimeDisplay = DateFormat('hh:mm a').format(checkOutDateTime);
       }
     return
       Container(
@@ -233,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: _isCheckedin ? Color(0xFFFF6000) : Colors.pink,
                           size: 30.sp,
                         ),
-                        Text('--:--', style: TextStyle(fontSize: 22.sp)),
+                        Text(checkOutTimeDisplay, style: TextStyle(fontSize: 22.sp)),
                         Text('Check Out', style: TextStyle(fontSize: 15.sp)),
                       ],
                     ),
@@ -245,7 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: _isCheckedin ? Color(0xFFFF6000) : Colors.pink,
                         size: 30.sp,
                       ),
-                      Text('--:--', style: TextStyle(fontSize: 22.sp)),
+                      Text(todayAttendenceModelData.hoursWorked==null||todayAttendenceModelData.hoursWorked==0?'--:--':todayAttendenceModelData.hoursWorked.toString(), style: TextStyle(fontSize: 22.sp)),
                       Text('Working Hrs', style: TextStyle(fontSize: 15.sp)),
                     ],
                   ),

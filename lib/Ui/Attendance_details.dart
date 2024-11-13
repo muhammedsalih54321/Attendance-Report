@@ -27,7 +27,7 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
   void initState() {
     BlocProvider.of<ReportBloc>(context).add(FetchReportEvent(
         month: _currentDate.month.toString(),
-        Year: _currentDate.year.toString()));
+        Year: _currentDate.year.toString(), ctx: context));
 
     super.initState();
   }
@@ -165,7 +165,7 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
                   return BlocProvider.of<ReportBloc>(context).add(
                       FetchReportEvent(
                           month: _currentDate.month.toString(),
-                          Year: _currentDate.year.toString()));
+                          Year: _currentDate.year.toString(), ctx: context));
                 },
               );
             }
@@ -205,7 +205,7 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
                                             month:
                                                 _selectedDate.month.toString(),
                                             Year:
-                                                _selectedDate.year.toString()));
+                                                _selectedDate.year.toString(), ctx: context));
                                   });
                                 },
                               );

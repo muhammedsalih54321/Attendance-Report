@@ -11,6 +11,7 @@ import 'package:pr_2/Bloc/TodayAttendence/today_attendence_bloc.dart';
 import 'package:pr_2/Ui/Attendance_details.dart';
 
 import '../Bloc/CheckIn/check_in_bloc.dart';
+import '../Repository/Model/TodayAttendenceModel.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String Qrcoderesult = '';
   DateTime currentTime = DateTime.now();
   late Timer timer;
-
+  late TodayAttendenceModel todayAttendenceModelData;
   @override
   void initState() {
     super.initState();
@@ -53,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Qrcoderesult = ResultData;
         print('Result:$Qrcoderesult');
       });
-      BlocProvider.of<CheckInBloc>(context).add(FetchCheckIn(qr: Qrcoderesult));
+      BlocProvider.of<CheckInBloc>(context).add(FetchCheckIn(qr: Qrcoderesult, ctx: context));
     } on PlatformException {
       ResultData = 'Failed to Scan !';
     }
@@ -188,7 +189,22 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             SizedBox(height: 80.h),
-            Container(
+            BlocBuilder<TodayAttendenceBloc, TodayAttendenceState>(
+  builder: (context, state) {
+    if(state is TodayAttendenceblocLoading){
+      return SizedBox();
+    }
+    if(state is TodayAttendenceblocLoaded){
+      todayAttendenceModelData = BlocProvider.of<TodayAttendenceBloc>(context).todayAttendenceModel;
+
+      // Parse and format the checkInTime if it's not empty
+      String checkInTimeDisplay = '--:--';
+      if (todayAttendenceModelData.checkInTime != '') {
+        DateTime checkInDateTime = DateTime.parse(todayAttendenceModelData.checkInTime!);
+        checkInTimeDisplay = DateFormat('hh:mm a').format(checkInDateTime);
+      }
+    return
+      Container(
               width: double.infinity,
               height: 100.h,
               child: Row(
@@ -203,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: _isCheckedin ? Color(0xFFFF6000) : Colors.pink,
                           size: 30.sp,
                         ),
-                        Text('--:--', style: TextStyle(fontSize: 22.sp)),
+                        Text(checkInTimeDisplay, style: TextStyle(fontSize: 22.sp)),
                         Text('Check In', style: TextStyle(fontSize: 15.sp)),
                       ],
                     ),
@@ -235,7 +251,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-            ),
+            );}
+    if(state is TodayAttendenceblocError){
+      return Center(child: Text("Error"),);
+    }else{
+      return SizedBox();
+    }
+  },
+),
           ],
         ),
       );

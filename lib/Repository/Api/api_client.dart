@@ -14,7 +14,7 @@ import '../../Bloc/RefreshToken/referesh_token_bloc.dart';
 
 class ApiClient {
   
-  Future<Response> invokeAPI(String path, String method, Object? body,BuildContext? ctx) async {
+  Future<Response> invokeAPI(String path, String method, Object? body) async {
     Map<String, String> headerParams = {};
     Response response;
 
@@ -22,7 +22,7 @@ class ApiClient {
     print(url);
      final SharedPreferences prefs = await SharedPreferences.getInstance();
     String token= prefs.getString("Token")??"";
-    String refreshToken= prefs.getString("Refresh")??"";
+
     // String refresh= prefs.getString("Refresh")??"";
     print(token);
 
@@ -106,9 +106,7 @@ class ApiClient {
 
     print('status of $path =>' + (response.statusCode).toString());
     print(response.body);
-    if(response.statusCode==401){
-      BlocProvider.of<RefereshTokenBloc>(ctx!).add(FetchRefreshToken(refershToken: refreshToken, ctx: ctx));
-    }
+
     if (response.statusCode >= 400) {
       log(path +
           ' : ' +

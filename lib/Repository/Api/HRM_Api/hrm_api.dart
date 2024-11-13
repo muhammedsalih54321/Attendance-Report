@@ -10,6 +10,7 @@ import 'package:pr_2/main.dart';
 import '../../Model/AttendenceModel.dart';
 import '../../Model/CheckInModel.dart';
 import '../../Model/RefereshTokenModel.dart';
+import '../../Model/TodayAttendenceModel.dart';
 
 class HrmApi {
   ApiClient apiClient = ApiClient();
@@ -22,7 +23,7 @@ class HrmApi {
     var body = {"email": email, "password": password};
     print(body);
     Response response =
-        await apiClient.invokeAPI(trendingpath, 'LOGINPOST', jsonEncode(body),null);
+        await apiClient.invokeAPI(trendingpath, 'LOGINPOST', jsonEncode(body));
 
     print(response.body);
     return LoginModel.fromJson(jsonDecode(response.body));
@@ -32,7 +33,7 @@ class HrmApi {
   Future<ReportModel> getReport(String month, String year) async {
     String trendingpath = '/api/attendances/report?month=$month&year=$year';
     var body = {};
-    Response response = await apiClient.invokeAPI(trendingpath, 'GET', body,null);
+    Response response = await apiClient.invokeAPI(trendingpath, 'GET', body);
 
     return ReportModel.fromJson(jsonDecode(response.body));
   }
@@ -43,7 +44,7 @@ class HrmApi {
 
     print(trendingpath);
     var body = {};
-    Response response = await apiClient.invokeAPI(trendingpath, 'POST', body,null);
+    Response response = await apiClient.invokeAPI(trendingpath, 'POST', body);
 
     return CheckInModel.fromJson(jsonDecode(response.body));
   }
@@ -54,7 +55,7 @@ class HrmApi {
 
     print(trendingpath);
     var body = {};
-    Response response =   await apiClient.invokeAPI(trendingpath, 'POST', body,null);
+    Response response =   await apiClient.invokeAPI(trendingpath, 'POST', body);
     return CheckInModel.fromJson(jsonDecode(response.body));
   }
   //overTime CheckIn
@@ -63,7 +64,7 @@ class HrmApi {
 
     print(trendingpath);
     var body = {};
-    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body,null);
+    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body);
     return CheckInModel.fromJson(jsonDecode(response.body));
   }
   //overTime CheckOut
@@ -72,7 +73,7 @@ class HrmApi {
 
     print(trendingpath);
     var body = {};
-    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body,null);
+    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body);
     return CheckInModel.fromJson(jsonDecode(response.body));
   }
   //referesh token
@@ -83,18 +84,18 @@ class HrmApi {
     var body ={
       "refresh":refereshToken
     };
-    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body,ctx);
+    Response response =  await apiClient.invokeAPI(trendingpath, 'POST', body);
     return RefereshTokenModel.fromJson(jsonDecode(response.body));
   }
   //get today attendence
-  Future<AttendenceModel> getTodayAttendence() async {
+  Future<TodayAttendenceModel> getTodayAttendence() async {
     String trendingpath = '/api/attendances/today';
 
     print(trendingpath);
     var body ={
 
     };
-    Response response =  await apiClient.invokeAPI(trendingpath, 'GET', body,null);
-    return AttendenceModel.fromJson(jsonDecode(response.body));
+    Response response =  await apiClient.invokeAPI(trendingpath, 'GET', body);
+    return TodayAttendenceModel.fromJson(jsonDecode(response.body));
   }
 }

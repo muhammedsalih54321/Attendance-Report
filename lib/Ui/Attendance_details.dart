@@ -153,8 +153,7 @@ class _AttendenceDetailsState extends State<AttendenceDetails> {
               );
             }
             if (state is ReportblocError) {
-              return 
-
+              return
                RefreshIndicator(
                 child: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
